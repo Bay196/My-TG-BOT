@@ -1,0 +1,24 @@
+from flask import Flask, request
+import os
+from telegram import Bot, Update
+from telegram.ext import Dispatcher, CommandHandler
+
+TOKEN = 7616459783:AAHSxs45oQ67xFNPIA1LrdMYWuaF3dhj6c4  # Берётся из переменных Railway
+app = Flask(Bay_bot)
+bot = Bot(7616459783:AAHSxs45oQ67xFNPIA1LrdMYWuaF3dhj6c4) 
+def start(update: Update, context):
+    update.message.reply_text("🚀 Бот запущен на Railway!")
+@app.route('/' + 7616459783:AAHSxs45oQ67xFNPIA1LrdMYWuaF3dhj6c4, methods=['POST'])
+def webhook():
+    update = Update.de_json(request.get_json(), bot)
+    dp = Dispatcher(bot, None, workers=0)
+    dp.add_handler(CommandHandler("start", start))
+    dp.process_update(update)
+    return "OK", 200
+@app.route('/')
+def set_webhook():
+    bot.set_webhook(url=f"https://{os.getenv('RAILWAY_STATIC_URL')}/{TOKEN}")
+    return "Webhook установлен!", 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5000)))
